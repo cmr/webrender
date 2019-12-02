@@ -25,7 +25,7 @@ webrender_build = { version = "0.0.1", path = "../webrender_build" }
 
 [dependencies]
 base64 = { optional = true, version = "0.10" }
-bincode = { version = "1.0", default-features = false }
+bincode = { git = "https://github.com/cmr/bincode", branch="web" }
 bitflags = "1.2"
 byteorder = "1.0"
 cfg-if = "0.1.2"
