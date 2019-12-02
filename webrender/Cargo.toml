@@ -32,7 +32,7 @@ cfg-if = "0.1.2"
 cstr = "0.1.2"
 euclid = { version = "0.20.0", features = ["serde"] }
 fxhash = "0.2.1"
-gleam = "0.6.17"
+gleam = "0.6.17" # wasm?
 image_loader = { optional = true, version = "0.22", package = "image", default-features = false, features = ["png_codec"] }
 lazy_static = "1"
 log = "0.4"
@@ -40,7 +40,7 @@ malloc_size_of_derive = "0.1"
 num-traits = "0.2"
 plane-split = "0.15"
 png = { optional = true, version = "0.15" }
-rayon = "1"
+rayon = "1" # wasm?
 ron = { optional = true, version = "0.1.7" }
 serde = { optional = true, version = "1.0", features = ["serde_derive"] }
 serde_json = { optional = true, version = "1.0" }
@@ -58,8 +58,12 @@ svg_fmt = "0.4"
 mozangle = "0.3.1"
 rand = "0.4"
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+freetype = { git = "https://github.com/cmr/rust-freetype.git", branch="web"}
+libc = "0.2"
+
 [target.'cfg(any(target_os = "android", all(unix, not(target_os = "macos"))))'.dependencies]
-freetype = { version = "0.4", default-features = false }
+freetype = { git = "https://github.com/cmr/rust-freetype.git", branch = "web", default-features = false }
 libc = "0.2"
 
 [target.'cfg(target_os = "windows")'.dependencies]

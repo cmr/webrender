@@ -23,9 +23,9 @@ use freetype::succeeded;
 use crate::glyph_rasterizer::{FontInstance, GlyphFormat, GlyphKey};
 use crate::glyph_rasterizer::{GlyphRasterError, GlyphRasterResult, RasterizedGlyph};
 use crate::internal_types::{FastHashMap, ResourceCacheError};
-#[cfg(any(not(target_os = "android"), feature = "no_static_freetype"))]
+#[cfg(any(not(any(target_os = "android", target_arch = "wasm32")), feature = "no_static_freetype"))]
 use libc::{dlsym, RTLD_DEFAULT};
-use libc::free;
+//use libc::free;
 use std::{cmp, mem, ptr, slice};
 use std::cmp::max;
 use std::collections::hash_map::Entry;
@@ -73,7 +73,7 @@ pub fn unimplemented(error: FT_Error) -> bool {
 }
 
 // Use dlsym to check for symbols. If not available. just return an unimplemented error.
-#[cfg(any(not(target_os = "android"), feature = "no_static_freetype"))]
+#[cfg(any(not(any(target_os = "android", target_arch="wasm32")), feature = "no_static_freetype"))]
 macro_rules! ft_dyn_fn {
     ($func_name:ident($($arg_name:ident:$arg_type:ty),*) -> FT_Error) => {
         #[allow(non_snake_case)]
@@ -95,8 +95,8 @@ macro_rules! ft_dyn_fn {
     }
 }
 
-// On Android, just statically link in the symbols...
-#[cfg(all(target_os = "android", not(feature = "no_static_freetype")))]
+// On Android and wasm, just statically link in the symbols...
+#[cfg(any(target_arch="wasm32", all(target_os = "android", not(feature = "no_static_freetype"))))]
 macro_rules! ft_dyn_fn {
     ($($proto:tt)+) => { extern "C" { fn $($proto)+; } }
 }
@@ -128,7 +128,7 @@ impl Drop for FontFace {
         unsafe {
             if !self.mm_var.is_null() &&
                unimplemented(FT_Done_MM_Var((*(*self.face).glyph).library, self.mm_var)) {
-                free(self.mm_var as _);
+                //free(self.mm_var as _);
             }
 
             FT_Done_Face(self.face);

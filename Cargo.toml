@@ -4,8 +4,8 @@ members = [
     "examples",
     "webrender",
     "webrender_api",
-    "wrench",
-    "example-compositor/compositor",
+    #"wrench",
+    #"example-compositor/compositor",
 ]
 
 [profile.release]

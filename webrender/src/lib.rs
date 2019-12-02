@@ -135,7 +135,7 @@ pub use crate::record::{ApiRecordingReceiver, BinaryRecorder, WEBRENDER_RECORDIN
 mod platform {
     #[cfg(target_os = "macos")]
     pub use crate::platform::macos::font;
-    #[cfg(any(target_os = "android", all(unix, not(target_os = "macos"))))]
+    #[cfg(any(target_os = "android", target_arch="wasm32", all(unix, not(target_os = "macos"))))]
     pub use crate::platform::unix::font;
     #[cfg(target_os = "windows")]
     pub use crate::platform::windows::font;
@@ -144,7 +144,7 @@ mod platform {
     pub mod macos {
         pub mod font;
     }
-    #[cfg(any(target_os = "android", all(unix, not(target_os = "macos"))))]
+    #[cfg(any(target_os = "android", target_arch="wasm32", all(unix, not(target_os = "macos"))))]
     pub mod unix {
         pub mod font;
     }
