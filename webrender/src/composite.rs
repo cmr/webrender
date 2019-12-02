@@ -7,7 +7,7 @@ use api::units::{DeviceRect, DeviceIntSize, DeviceIntRect, DeviceIntPoint, World
 use crate::gpu_types::{ZBufferId, ZBufferIdGenerator};
 use crate::picture::{ResolvedSurfaceTexture};
 use std::{ops, u64};
-use std::sync::atomic::{AtomicU64, Ordering};
+//use std::sync::atomic::{AtomicU64, Ordering};
 
 /*
  Types and definitions related to compositing picture cache tiles
@@ -15,7 +15,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
  */
 
 // Counter for generating unique native surface ids
-static NEXT_NATIVE_SURFACE_ID: AtomicU64 = AtomicU64::new(0);
+static mut NEXT_NATIVE_SURFACE_ID: u64 = 0;
 
 /// Describes details of an operation to apply to a native surface
 #[derive(Debug, Clone)]
@@ -210,7 +210,9 @@ impl CompositeState {
         size: DeviceIntSize,
         is_opaque: bool,
     ) -> NativeSurfaceId {
-        let id = NativeSurfaceId(NEXT_NATIVE_SURFACE_ID.fetch_add(1, Ordering::Relaxed));
+	let id = NativeSurfaceId(unsafe { NEXT_NATIVE_SURFACE_ID }) ;
+	unsafe { NEXT_NATIVE_SURFACE_ID += 1 };
+        //let id = NativeSurfaceId(NEXT_NATIVE_SURFACE_ID.fetch_add(1, Ordering::Relaxed));
 
         self.native_surface_updates.push(
             NativeSurfaceOperation {
